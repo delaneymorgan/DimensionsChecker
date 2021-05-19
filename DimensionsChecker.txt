@@ -1,0 +1,27 @@
+ set picFolder to (choose folder)
+
+set minWidth to 400
+set minHeight to 400
+
+tell application "System Events"
+	set imgPaths to path of files of picFolder whose kind is "JPEG image"
+end tell
+
+repeat with imgPath in imgPaths
+	set imgAlias to alias imgPath
+	tell application "Image Events"
+		set img to open imgPath
+		set imgSize to dimensions of img
+		if imgSize = {} then
+			log imgPath & " - missing dimensions"
+		else
+			display dialog imgSize as text
+			set imgWidth to item 1 of imgSize
+			set imgHeight to item 2 of imgSize
+			if (imgWidth < minWidth) or (imgHeight < minHeight) then
+				tell application "Finder" to set label index of imgAlias to 2
+			end if
+		end if
+		close img
+	end tell
+end repeat
